@@ -1,0 +1,6 @@
+<?php include 'includes/navbar.php'; include 'config.php'; ?>
+<!doctype html><html><head><meta charset='utf-8'><title>Compare Prices</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"></head><body class='container py-4'>
+<h1>Compare Prices</h1>
+<form class='mb-3'><input class='form-control' name='q' placeholder='Search product' value='<?php echo isset($_GET['q'])?htmlspecialchars($_GET['q']):""; ?>'></form>
+<?php if (!empty($_GET['q'])) { $term = '%'.$conn->real_escape_string($_GET['q']).'%'; $sql = "SELECT p.product_name, s.supplier_name, pr.price, pr.date_checked FROM products p JOIN prices pr ON pr.product_id = p.id JOIN suppliers s ON s.id = pr.supplier_id WHERE p.product_name LIKE ? ORDER BY pr.price ASC"; $stmt = $conn->prepare($sql); $stmt->bind_param('s',$term); $stmt->execute(); $res = $stmt->get_result(); echo '<table class="table"><thead><tr><th>Product</th><th>Supplier</th><th>Price</th><th>Date</th></tr></thead><tbody>'; while ($r = $res->fetch_assoc()) { echo '<tr><td>'.htmlspecialchars($r['product_name']).'</td><td>'.htmlspecialchars($r['supplier_name']).'</td><td>R'.number_format($r['price'],2).'</td><td>'.htmlspecialchars($r['date_checked']).'</td></tr>'; } echo '</tbody></table>'; } ?>
+<?php include 'includes/footer.php'; ?></body></html>
