@@ -1,0 +1,116 @@
+import asyncio
+import sqlite3
+import json
+import re
+from datetime import datetime
+from pathlib import Path
+from playwright.async_api import async_playwright
+
+DB_PATH = Path("dealtrack.db")
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY,
+        store TEXT,
+        title TEXT,
+        price REAL,
+        currency TEXT,
+        sku TEXT,
+        url TEXT UNIQUE,
+        image_url TEXT,
+        scraped_at TEXT
+    )
+    """)
+    conn.commit()
+    conn.close()
+
+def save_product(store, p):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""
+    INSERT OR REPLACE INTO products (store, title, price, currency, sku, url, image_url, scraped_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        store,
+        p.get("title"),
+        p.get("price"),
+        p.get("currency"),
+        p.get("sku"),
+        p.get("url"),
+        p.get("image_url"),
+        datetime.utcnow().isoformat()
+    ))
+    conn.commit()
+    conn.close()
+
+def parse_price(text):
+    if not text: return (None, None)
+    m = re.search(r"([R£$€]\s?[\d.,]+)", text)
+    if not m: return (None, None)
+    raw = m.group(0)
+    currency = re.sub(r"[\d.,\s]", "", raw)
+    num = re.sub(r"[^\d.,]", "", raw).replace(",", "")
+    try:
+        return (float(num), currency)
+    except:
+        return (None, currency)
+
+async def scrape_store(playwright, store, cfg):
+    browser = await playwright.chromium.launch(headless=True)
+    page = await browser.new_page()
+    await page.goto(cfg["url"], timeout=60000)
+
+    # Extract data
+    title = None
+    price_text = None
+    sku = None
+    image_url = None
+
+    if cfg.get("title"):
+        try: title = await page.locator(cfg["title"]).first.inner_text()
+        except: pass
+
+    if cfg.get("price"):
+        try: price_text = await page.locator(cfg["price"]).first.inner_text()
+        except: pass
+
+    if cfg.get("sku"):
+        try: sku = await page.locator(cfg["sku"]).first.inner_text()
+        except: pass
+
+    if cfg.get("image"):
+        try: image_url = await page.locator(cfg["image"]).first.get_attribute("src")
+        except: pass
+
+    price, currency = parse_price(price_text)
+
+    product = {
+        "title": title.strip() if title else None,
+        "price": price,
+        "currency": currency,
+        "sku": sku.strip() if sku else None,
+        "url": cfg["url"],
+        "image_url": image_url
+    }
+
+    save_product(store, product)
+    print(f"✅ {store}: {title} - {price} {currency}")a
+    await browser.close()
+
+async def main():
+    init_db()
+    with open("sites.json", "r", encoding="utf-8") as f:
+        sites = json.load(f)
+
+    async with async_playwright() as p:
+        for store, cfg in sites.items():
+            try:
+                await scrape_store(p, store, cfg)
+            except Exception as e:
+                print(f"❌ Error scraping {store}: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())

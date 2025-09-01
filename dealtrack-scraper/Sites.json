@@ -1,0 +1,72 @@
+{
+  "Clicks": {
+    "url": "https://clicks.co.za/infacare_stage-1-infant-starter-formula-1-8kg/p/68703",
+    "title": "h1.product-name",
+    "price": ".price",
+    "sku": ".product-code",
+    "image": ".pdp-image img"
+  },
+  "Game": {
+    "url": "https://www.game.co.za/gameza/en/All-Departments/Baby-%26-Toddler/Feeding/Formula/INFACARE-1-POWDER-1.8KG/p/000000000000099479",
+    "title": "h1.product-title",
+    "price": ".price",
+    "sku": ".product-code",
+    "image": ".pdp-image img"
+  },
+  "Woolworths": {
+    "url": "https://www.woolworths.co.za/cat/Baby/Baby-Food-Toiletries/Formula/_/N-o3ukzo",
+    "title": "h1",
+    "price": ".price",
+    "sku": null,
+    "image": ".product-image img"
+  },
+  "PicknPay": {
+    "url": "https://www.pnp.co.za/c/baby-formula-stage-1903985685",
+    "title": "h1",
+    "price": ".product-price",
+    "sku": null,
+    "image": ".product-image img"
+  },
+  "Takealot": {
+    "url": "https://www.takealot.com/infacare-no1-box-1-8kg/PLID20571795",
+    "title": "h1.title",
+    "price": ".currency",
+    "sku": ".product-code",
+    "image": ".gallery-main img"
+  },
+  "DisChem": {
+    "url": "https://www.dischem.co.za/shop-by-department/brands/brands-i/infacare",
+    "title": "h1",
+    "price": ".price",
+    "sku": null,
+    "image": ".product-image img"
+  },
+  "BabyCity": {
+    "url": "https://www.babycity.co.za/infacare-1-8kg-tin-670",
+    "title": "h1",
+    "price": ".price",
+    "sku": null,
+    "image": ".product-image img"
+  },
+  "Makro": {
+    "url": "https://www.makro.co.za/baby-products-toys/baby-feeding/formula/infacare-1-powder-formula-1-8kg/p/000000000000274498_EA",
+    "title": "h1",
+    "price": ".price",
+    "sku": ".product-code",
+    "image": ".product-image img"
+  },
+  "Checkers": {
+    "url": "https://www.checkers.co.za/",
+    "title": "h1",
+    "price": ".price",
+    "sku": null,
+    "image": ".product-image img"
+  },
+  "Shoprite": {
+    "url": "https://www.shoprite.co.za/c-309/All-Departments/Baby/Baby-Milk/Milk-Formula",
+    "title": "h1",
+    "price": ".price",
+    "sku": null,
+    "image": ".product-image img"
+  }
+}
